@@ -3,6 +3,8 @@ import { StyleSheet, Image, View, TextInput, Text, Button } from 'react-native';
 
 import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
+import { connect } from 'react-redux';
+import { UserForm, deleteUser, saveUser } from '@/state/actions';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().min(3, 'Too short').max(50, 'Too long'),
@@ -10,7 +12,12 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().min(6).required().lowercase().uppercase().matches(/[0-9]/, 'Password must contain a number'),
 });
 
-export default function TabTwoScreen() {
+
+function TabTwoScreen({ user, saveUser, deleteUser }: {
+  user: UserForm;
+  saveUser: (user: UserForm) => void;
+  deleteUser: () => void;
+}) {
 
   // const formik = useFormik({
   //   initialValues: {
@@ -32,16 +39,16 @@ export default function TabTwoScreen() {
       />
       <Formik
         initialValues={{
-          name: '',
-          email: '',
-          password: '',
+          name: user.name,
+          email: user.email,
+          password: user.password,
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log(values);
+          saveUser(values);
         }}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, ...formik }) => (
             <View style={{ gap: 8}}>
               <TextInput
                 style={styles.input}
@@ -68,12 +75,25 @@ export default function TabTwoScreen() {
               />
               {errors.password && touched.password && <Text style={{ color: 'red' }}>{errors.password}</Text>}
               <Button onPress={() => handleSubmit()} title="Submit" />
+              <Button onPress={() => {deleteUser(); formik.resetForm()}} title="Delete" />
             </View>
           )}
         </Formik>
     </View>
   );
 }
+
+
+const mapStateToProps = (state: UserForm) => ({
+  user: state,
+});
+
+const mapDispatchToProps = {
+  saveUser,
+  deleteUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabTwoScreen);
 
 const styles = StyleSheet.create({
   titleContainer: {
