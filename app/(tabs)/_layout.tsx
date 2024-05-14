@@ -2,8 +2,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Text } from 'react-native';
+import { Text, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
