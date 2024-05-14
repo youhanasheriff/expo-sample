@@ -1,22 +1,24 @@
-import { useEffect } from 'react';
-import { Image, StyleSheet, Text, View, Animated, Easing } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, View, Animated, Easing, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 
-export default function HomeScreen() {
+
+function AnimatedImage() {
   const progress = new Animated.Value(0);
 
   useEffect(() => {
-    
-    Animated.loop(
+    const anime = Animated.loop(
       Animated.timing(progress, {
         toValue: 1,
         duration: 5000,
         useNativeDriver: true,
         easing: Easing.linear,
       })
-    ).start();
+    );
+
+    anime.start();
 
     return () => {
-      progress.stopAnimation();
+      anime.stop();
     }
   }, [])
 
@@ -24,17 +26,52 @@ export default function HomeScreen() {
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
-  
+
+    return (<Animated.Image source={require('@/assets/images/react-logo.png')} style={[styles.reactLogo, {
+  transform: [{
+    rotate: rotate
+  }]
+}]} resizeMode={'contain'} />);
+}
+
+
+export default function HomeScreen() {
+  const [data, setData] = useState([1, 2, 3]);
+  const [refresh, setRefresh] = useState(false);
+
+
+
   return (
     <View style={styles.stepContainer}>
-      <Animated.View style={[styles.titleContainer, { transform: [{ rotate: rotate }]}]}>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={styles.reactLogo}
-          resizeMode='contain'
-          />
-      </Animated.View>
-      <Text>Open up the code for this screen:</Text>
+      <FlatList 
+        data={data}
+        keyExtractor={item => (item * Math.random() * 1000).toString()}
+        renderItem={({item}) => (
+          <View style={styles.titleContainer}>
+            <AnimatedImage />
+            <Text>Step {item}</Text>
+            <TouchableOpacity onPress={() => {
+              if (data.length === 1) {
+                  Alert.alert('Alert!', 'Cannot delete last item', 
+                  [{text: 'Cancel', onPress: () => console.log('Cancel Pressed')}],
+                );
+                return;
+              }
+              setData((prev) => prev.filter((i) => i !== item));
+            }}>
+              <Text>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        refreshControl={<RefreshControl refreshing={refresh} onRefresh={() => {
+          setRefresh(true);
+          setTimeout(() => {
+            setData((prev) => [...prev, prev[prev.length - 1] + 1]);
+            setRefresh(false);
+          }, 2000);
+          console.log('Refresh');
+        }} />}
+      />
     </View>
   );
 }
@@ -42,18 +79,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '100%',
-    height: '20%',
   },
   stepContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   reactLogo: {
-    height: 178,
-    width: 290,
+    height: 100,
+    width: 100,
   },
 });
