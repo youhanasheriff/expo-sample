@@ -7,6 +7,7 @@ export default function HomeScreen() {
         <Image
           source={require('@/assets/images/react-logo.png')}
           style={styles.reactLogo}
+          resizeMode='contain'
           />
       </View>
       <Text>Open up the code for this screen:</Text>

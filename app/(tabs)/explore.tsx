@@ -8,6 +8,7 @@ export default function TabTwoScreen() {
       <Image
         source={require('@/assets/images/react-logo.png')}
         style={styles.headerImage}
+        resizeMode='contain'
       />
     </View>
   );
@@ -15,13 +16,14 @@ export default function TabTwoScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+    height: 178,
+    width: 290,
   },
   titleContainer: {
+    flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
   },
 });
