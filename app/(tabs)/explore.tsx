@@ -5,6 +5,7 @@ import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 import { UserForm, deleteUser, saveUser } from '@/state/actions';
+import { Link } from 'expo-router';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().min(3, 'Too short').max(50, 'Too long'),
@@ -79,6 +80,7 @@ function TabTwoScreen({ user, saveUser, deleteUser }: {
             </View>
           )}
         </Formik>
+        <Link href="/get-native"><Text>Go to Native</Text></Link>
     </View>
   );
 }

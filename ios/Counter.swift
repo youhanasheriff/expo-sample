@@ -6,3 +6,14 @@
 //
 
 import Foundation
+
+@objc(Counter)
+class Counter: NSObject {
+  
+  private var count = 0;
+  
+  @objc
+  func increament() {
+    count = count + 1;
+  }
+}
